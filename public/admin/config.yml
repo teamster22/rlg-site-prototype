@@ -1,0 +1,134 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+#
+# Sveltia CMS config for the RLG prototype.
+#
+# NOTE ON STYLE: this file uses block mappings, not the inline `{ a: b }` flow
+# style shown in most Sveltia docs. In flow style a comma inside an unquoted
+# value (a hint like "Bold, italic, lists") is parsed as a key separator and
+# silently produces garbage keys. Block style avoids the whole class of bug.
+
+backend:
+  name: github
+  repo: teamster22/rlg-site-prototype
+  branch: main
+  # No base_url: Art signs in with a GitHub personal access token via the
+  # "Sign In with Token" button. Adding base_url would require an OAuth app
+  # plus a Cloudflare Worker; not needed for a single editor.
+
+# Where uploads land in the repo, and how they are referenced in markdown.
+media_folder: public/media
+public_folder: /media
+
+collections:
+  # ---- Singleton pages: fixed set, editable, not creatable/deletable ----
+  - name: pages
+    label: Pages
+    label_singular: Page
+    folder: src/content/pages
+    extension: md
+    format: frontmatter
+    create: false
+    delete: false
+    identifier_field: title
+    summary: '{{title}}'
+    fields:
+      - label: Page title
+        name: title
+        widget: string
+
+      - label: Tagline
+        name: tagline
+        widget: string
+        required: false
+        hint: 'One line under the page title. Leave blank to hide it.'
+
+      - label: Hero image
+        name: hero
+        widget: image
+        required: false
+        hint: 'Optional. Wide images look best.'
+
+      - label: Menu order
+        name: order
+        widget: number
+        value_type: int
+        default: 99
+
+      - label: Hide this page
+        name: draft
+        widget: boolean
+        default: false
+        hint: 'Hidden pages are not built at all. The Home page ignores this.'
+
+      - label: Page content
+        name: body
+        widget: richtext
+        hint: 'Bold, italic, headings, lists, links, and images.'
+
+  # ---- Projects: repeatable. This is the "add a new thing" test. ----
+  - name: projects
+    label: Projects
+    label_singular: Project
+    folder: src/content/projects
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    identifier_field: title
+    summary: '{{title}} — {{status}}'
+    sortable_fields:
+      - order
+      - title
+      - status
+    view_groups:
+      - label: Status
+        field: status
+    fields:
+      - label: Project name
+        name: title
+        widget: string
+
+      - label: Location
+        name: location
+        widget: string
+        required: false
+        hint: 'County and state, e.g. Ravalli County, MT'
+
+      - label: Status
+        name: status
+        widget: select
+        default: Exploring
+        options:
+          - Exploring
+          - Under contract
+          - In development
+          - Complete
+
+      - label: Acres
+        name: acres
+        widget: number
+        value_type: int
+        required: false
+        min: 0
+
+      - label: One-line summary
+        name: summary
+        widget: text
+        required: false
+        hint: 'Shown on the Projects index. Two sentences at most.'
+
+      - label: Photo
+        name: photo
+        widget: image
+        required: false
+
+      - label: Sort order
+        name: order
+        widget: number
+        value_type: int
+        default: 99
+
+      - label: Description
+        name: body
+        widget: richtext

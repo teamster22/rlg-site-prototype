@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Base title="Projects" tagline="What we are working on, and what we have finished.">
+  <ul class="cards">
+    {
+      projects.map((p) => (
+        <li class="card">
+          <h2><a href={`${BASE}/projects/${p.id}/`}>{p.data.title}</a></h2>
+          <p class="meta">
+            {[p.data.location, p.data.status, p.data.acres && `${p.data.acres} acres`]
+              .filter(Boolean)
+              .join(' · ')}
+          </p>
+          {p.data.summary && <p>{p.data.summary}</p>}
+        </li>
+      ))
+    }
+  </ul>
+</Base>
