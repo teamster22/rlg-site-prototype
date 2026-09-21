@@ -1,7 +1,7 @@
 ---
 title: Cascade Siding
 location: Chelan County, WA
-status: Under contract
+status: Exploring
 acres: 58
 order: 2
 summary: Fifty-eight acres adjacent to an abandoned rail siding, under contract pending a water study.
